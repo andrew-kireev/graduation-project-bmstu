@@ -87,3 +87,8 @@ func (usecase *ProfilesUsecase) SearchTracks(searchQuery string) ([]*models.Othe
 	otherUsers, err := usecase.profilesRepo.SearchTracks(searchQuery)
 	return otherUsers, err
 }
+
+func (usecase *ProfilesUsecase) CreateAdminProfile(user *models.AdminProfile) error {
+	err := usecase.profilesRepo.CreateAdminProfile(user)
+	return err
+}

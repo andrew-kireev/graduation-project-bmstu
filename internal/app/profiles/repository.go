@@ -16,4 +16,7 @@ type Repository interface {
 	GetSubscribers(userID int) ([]*models.OtherUser, error)
 	GetSubscriptions(userID int) ([]*models.OtherUser, error)
 	SearchTracks(searchQuery string) ([]*models.OtherUser, error)
+
+	// Admin Profiles
+	CreateAdminProfile(*models.AdminProfile) error
 }

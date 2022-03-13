@@ -2,13 +2,13 @@ package main
 
 import (
 	"2021_1_Noskool_team/configs"
+	"2021_1_Noskool_team/internal/app/profiles/delivery/grpc"
 	profiles "2021_1_Noskool_team/internal/app/profiles/delivery/http"
 	"2021_1_Noskool_team/internal/app/profiles/repository/postgresDB"
 	"2021_1_Noskool_team/internal/app/profiles/usecase"
 	"2021_1_Noskool_team/internal/pkg/utility"
 	"flag"
 	"log"
-	"time"
 
 	"github.com/BurntSushi/toml"
 
@@ -25,22 +25,25 @@ func init() {
 }
 
 func main() {
-	time.Sleep(50 * time.Second)
+	//time.Sleep(50 * time.Second)
 	flag.Parse()
 
-	config := configs.NewConfig()
+	local := true
+	config := configs.NewConfig(local)
 	_, err := toml.DecodeFile(configPath, config)
 	if err != nil {
 		logrus.Error(err)
 	}
 
-	profDBCon, err := utility.CreatePostgresConnection(config.MusicPostgresBD)
+	profDBCon, err := utility.CreatePostgresConnection(config.ProfileDB)
 	if err != nil {
 		logrus.Error(err)
 	}
 	profRep := postgresDB.NewProfileRepository(profDBCon)
 	profUsecase := usecase.NewProfilesUsecase(profRep)
 	sanitizer := bluemonday.UGCPolicy()
+
+	go grpc.StartSessionsGRPCServer("127.0.0.1:7777", config, profUsecase)
 
 	s := profiles.New(config, profUsecase, sanitizer)
 

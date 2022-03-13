@@ -45,6 +45,7 @@ func New(config *configs.Config, profUsecase profiles.Usecase, sanitizer *bluemo
 	if err != nil {
 		logrus.Error(err)
 	}
+
 	return &ProfilesServer{
 		config:         config,
 		logger:         logrus.New(),

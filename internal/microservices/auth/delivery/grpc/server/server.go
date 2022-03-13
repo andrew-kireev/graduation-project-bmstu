@@ -5,10 +5,11 @@ import (
 	proto "2021_1_Noskool_team/internal/microservices/auth/delivery/grpc/protobuff"
 	"context"
 	"fmt"
+	"net"
+
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
 )
 
 type server struct {

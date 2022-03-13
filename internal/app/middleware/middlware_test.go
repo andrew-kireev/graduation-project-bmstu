@@ -3,13 +3,14 @@ package middleware
 import (
 	"2021_1_Noskool_team/configs"
 	mock_client "2021_1_Noskool_team/internal/microservices/auth/delivery/grpc/client/mocks"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/BurntSushi/toml"
 	"github.com/golang/mock/gomock"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 )
 
 const (

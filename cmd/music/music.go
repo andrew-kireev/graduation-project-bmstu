@@ -27,7 +27,9 @@ const (
 
 func main() {
 	time.Sleep(50 * time.Second)
-	config := configs.NewConfig()
+
+	local := true
+	config := configs.NewConfig(local)
 	_, err := toml.DecodeFile(configPath, config)
 	if err != nil {
 		logrus.Error(err)

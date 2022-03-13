@@ -256,3 +256,15 @@ func (r *ProfileRepository) SearchTracks(searchQuery string) ([]*models.OtherUse
 	}
 	return subscriptions, err
 }
+
+func (r *ProfileRepository) CreateAdminProfile(user *models.AdminProfile) error {
+	if err := user.ValidateForCreate(); err != nil {
+		return err
+	}
+	_, err := r.con.Exec(
+		"INSERT INTO admin_profiles(login, encrypted_password) VALUES ($1, $2)",
+		user.Login,
+		user.EncryptedPassword)
+
+	return err
+}

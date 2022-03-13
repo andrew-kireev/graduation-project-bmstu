@@ -11,7 +11,7 @@ import (
 
 //easyjson:json
 type Search struct {
-	Tracks    []*TrackWithAlbum        `json:"tracks"`
+	Tracks    []*TrackWithAlbum           `json:"tracks"`
 	Albums    []*albumsModels.Album       `json:"albums"`
 	Musicians []*musiciansModels.Musician `json:"musicians"`
 	Playlists []*playlistsModels.Playlist `json:"playlists"`
@@ -31,7 +31,7 @@ type TrackWithAlbum struct {
 	Genres      []*models.Genre             `json:"genres"`
 	Musicians   []*musiciansModels.Musician `json:"musicians"`
 	Albums      []*albumsModels.Album       `json:"album"`
-	Album int
+	Album       int
 }
 
 func ConvertTrackToTrackWithAlbum(track *trackModels.Track) *TrackWithAlbum {
