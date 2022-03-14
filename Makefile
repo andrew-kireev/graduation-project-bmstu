@@ -36,7 +36,7 @@ linter:
 	 golangci-lint run
 
 imports:
-	goimports -local graduation-project-bmstu -w ./internal ./cm
+	goimports -local graduation-project-bmstu -w ./internal ./cmd
 
 
 .PHONY: build_profile

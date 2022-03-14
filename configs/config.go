@@ -18,8 +18,8 @@ func NewConfig(local bool) *Config {
 	if local {
 		return &Config{
 			MusicServerAddr:         ":8888",
-			SessionMicroserviceAddr: "sessions-service:8081",
-			SessionRedisStore:       "redis://redis/0",
+			SessionMicroserviceAddr: ":8081",
+			SessionRedisStore:       "redis://127.0.0.1:6379",
 			MusicPostgresBD:         "host=music-bd port=5432 user=andrewkireev dbname=music_service_docker password=password sslmode=disable",
 			ProfilesServerAddr:      ":8082",
 			ProfileDB:               "host=localhost port=5432 user=postgres dbname=music_service_docker password=password sslmode=disable",

@@ -2,9 +2,14 @@ package repository
 
 import (
 	"2021_1_Noskool_team/internal/microservices/auth/models"
+	"context"
 	"errors"
 
 	"github.com/gomodule/redigo/redis"
+)
+
+const (
+	adminProfileKey = "admin:"
 )
 
 type SessionsRepository struct {
@@ -15,6 +20,17 @@ func NewSessionRepository(conn *redis.Pool) *SessionsRepository {
 	return &SessionsRepository{
 		redisPool: conn,
 	}
+}
+
+func (sessionRep *SessionsRepository) CreateAdminSession(ctx context.Context, session *models.Sessions) (*models.Sessions, error) {
+	con := sessionRep.redisPool.Get()
+	defer con.Close()
+	result, err := redis.String(con.Do("SET", adminProfileKey+session.Hash, session.UserID,
+		"EX", session.Expiration))
+	if result != "OK" {
+		return session, errors.New("status not OK")
+	}
+	return session, err
 }
 
 func (sessionRep *SessionsRepository) CreateSession(session *models.Sessions) (*models.Sessions, error) {

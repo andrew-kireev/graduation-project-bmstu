@@ -3,6 +3,7 @@ package usecase
 import (
 	"2021_1_Noskool_team/internal/microservices/auth"
 	"2021_1_Noskool_team/internal/microservices/auth/models"
+	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
@@ -73,6 +74,28 @@ func (usecase *SessionsUsecase) CreateSession(userID string) (*models.Sessions, 
 	if err != nil {
 		fmt.Println(err)
 		session.UserID = "-1"
+		return session, err
+	}
+
+	return session, nil
+}
+
+func (usecase *SessionsUsecase) CreateAdminSession(ctx context.Context, userID string) (*models.Sessions, error) {
+	session := &models.Sessions{
+		UserID:     userID,
+		Hash:       "",
+		Expiration: oneDayTime,
+	}
+
+	session.Hash = GetMD5Hash(session.UserID)
+	fmt.Println(session.UserID)
+
+	session, err := usecase.sessionsRepo.CreateAdminSession(ctx, session)
+	if err != nil {
+		if session != nil {
+			session.UserID = "-1"
+		}
+
 		return session, err
 	}
 

@@ -9,4 +9,6 @@ type AuthCheckerClient interface {
 	Create(ctx context.Context, id string) (models.Result, error)
 	Check(ctx context.Context, id string) (models.Result, error)
 	Delete(ctx context.Context, id string) (models.Result, error)
+
+	CreateAdminSession(context.Context, string) (models.Result, error)
 }

@@ -66,8 +66,17 @@ func (a adminProfiles) CreateAdminProfile(ctx context.Context, in *proto.CreateA
 		return out, err
 	}
 
+	result, err := a.sessionsClient.CreateAdminSession(ctx, in.GetProfile().GetLogin())
+	if err != nil {
+		out := &proto.CreateAdminProfileOut{
+			Error: proto.CreateAdminProfileOut_ERROR_CREATING_PROFILE,
+		}
+		return out, err
+	}
+
 	out := &proto.CreateAdminProfileOut{
-		Error: proto.CreateAdminProfileOut_NO_ERROR,
+		Error:   proto.CreateAdminProfileOut_NO_ERROR,
+		Session: result.Hash,
 	}
 
 	return out, nil

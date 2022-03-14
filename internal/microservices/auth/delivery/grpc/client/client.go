@@ -49,6 +49,15 @@ func (sesClient *SessionsClient) Delete(ctx context.Context, hash string) (model
 	return transformIntoResultModel(result), nil
 }
 
+func (sesClient *SessionsClient) CreateAdminSession(ctx context.Context, adminLogin string) (models.Result, error) {
+	UserID := &proto.UserID{ID: adminLogin}
+	result, err := sesClient.client.CreateAdminSession(ctx, UserID, grpc.EmptyCallOption{})
+	if err != nil {
+		return models.Result{}, err
+	}
+	return transformIntoResultModel(result), nil
+}
+
 func transformIntoResultModel(result *proto.Result) models.Result {
 	if result == nil {
 		return models.Result{}
