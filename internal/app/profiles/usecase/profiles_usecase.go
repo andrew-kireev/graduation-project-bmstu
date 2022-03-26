@@ -92,3 +92,8 @@ func (usecase *ProfilesUsecase) CreateAdminProfile(user *models.AdminProfile) er
 	err := usecase.profilesRepo.CreateAdminProfile(user)
 	return err
 }
+
+func (usecase *ProfilesUsecase) LoginAdminProfile(profile *models.AdminProfile) error {
+	err := usecase.profilesRepo.LoginAdminProfile(profile)
+	return err
+}

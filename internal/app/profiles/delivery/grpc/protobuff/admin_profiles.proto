@@ -8,6 +8,15 @@ service AdminProfiles {
   rpc CreateAdminProfile(CreateAdminProfileIn) returns (CreateAdminProfileOut) {}
   rpc LoginAdminProfile(LoginAdminProfileIn) returns (LoginAdminProfileInOut) {}
   rpc LogoutAdminProfile(LoginAdminProfileIn) returns (LoginAdminProfileInOut) {}
+  rpc CheckIsLogged(CheckIsLoggedIn) returns (CheckIsLoggedOut) {}
+}
+
+message  CheckIsLoggedIn {
+  string session = 1;
+}
+
+message  CheckIsLoggedOut {
+  bool isLogged = 1;
 }
 
 message CreateAdminProfileIn {

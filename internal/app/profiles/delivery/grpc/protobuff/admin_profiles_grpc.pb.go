@@ -26,6 +26,7 @@ type AdminProfilesClient interface {
 	CreateAdminProfile(ctx context.Context, in *CreateAdminProfileIn, opts ...grpc.CallOption) (*CreateAdminProfileOut, error)
 	LoginAdminProfile(ctx context.Context, in *LoginAdminProfileIn, opts ...grpc.CallOption) (*LoginAdminProfileInOut, error)
 	LogoutAdminProfile(ctx context.Context, in *LoginAdminProfileIn, opts ...grpc.CallOption) (*LoginAdminProfileInOut, error)
+	CheckIsLogged(ctx context.Context, in *CheckIsLoggedIn, opts ...grpc.CallOption) (*CheckIsLoggedOut, error)
 }
 
 type adminProfilesClient struct {
@@ -63,6 +64,15 @@ func (c *adminProfilesClient) LogoutAdminProfile(ctx context.Context, in *LoginA
 	return out, nil
 }
 
+func (c *adminProfilesClient) CheckIsLogged(ctx context.Context, in *CheckIsLoggedIn, opts ...grpc.CallOption) (*CheckIsLoggedOut, error) {
+	out := new(CheckIsLoggedOut)
+	err := c.cc.Invoke(ctx, "/admin_profiles.AdminProfiles/CheckIsLogged", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminProfilesServer is the server API for AdminProfiles service.
 // All implementations must embed UnimplementedAdminProfilesServer
 // for forward compatibility
@@ -70,6 +80,7 @@ type AdminProfilesServer interface {
 	CreateAdminProfile(context.Context, *CreateAdminProfileIn) (*CreateAdminProfileOut, error)
 	LoginAdminProfile(context.Context, *LoginAdminProfileIn) (*LoginAdminProfileInOut, error)
 	LogoutAdminProfile(context.Context, *LoginAdminProfileIn) (*LoginAdminProfileInOut, error)
+	CheckIsLogged(context.Context, *CheckIsLoggedIn) (*CheckIsLoggedOut, error)
 	mustEmbedUnimplementedAdminProfilesServer()
 }
 
@@ -85,6 +96,9 @@ func (UnimplementedAdminProfilesServer) LoginAdminProfile(context.Context, *Logi
 }
 func (UnimplementedAdminProfilesServer) LogoutAdminProfile(context.Context, *LoginAdminProfileIn) (*LoginAdminProfileInOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LogoutAdminProfile not implemented")
+}
+func (UnimplementedAdminProfilesServer) CheckIsLogged(context.Context, *CheckIsLoggedIn) (*CheckIsLoggedOut, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckIsLogged not implemented")
 }
 func (UnimplementedAdminProfilesServer) mustEmbedUnimplementedAdminProfilesServer() {}
 
@@ -153,6 +167,24 @@ func _AdminProfiles_LogoutAdminProfile_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminProfiles_CheckIsLogged_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckIsLoggedIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminProfilesServer).CheckIsLogged(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/admin_profiles.AdminProfiles/CheckIsLogged",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminProfilesServer).CheckIsLogged(ctx, req.(*CheckIsLoggedIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminProfiles_ServiceDesc is the grpc.ServiceDesc for AdminProfiles service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -171,6 +203,10 @@ var AdminProfiles_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LogoutAdminProfile",
 			Handler:    _AdminProfiles_LogoutAdminProfile_Handler,
+		},
+		{
+			MethodName: "CheckIsLogged",
+			Handler:    _AdminProfiles_CheckIsLogged_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

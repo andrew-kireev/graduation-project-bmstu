@@ -13,6 +13,7 @@ import (
 	searchHttp "2021_1_Noskool_team/internal/app/search/delivery/http"
 	"2021_1_Noskool_team/internal/app/tracks"
 	trackHttp "2021_1_Noskool_team/internal/app/tracks/delivery/http"
+	"2021_1_Noskool_team/internal/clients/s3_music"
 	"2021_1_Noskool_team/internal/pkg/monitoring"
 	"net/http"
 
@@ -28,17 +29,24 @@ type MusicHandler struct {
 	albumsHandler   *albumHttp.AlbumsHandler
 	playlistHandler *playlistHttp.PlaylistsHandler
 	searchHandler   *searchHttp.SearchHandler
+	s3Client        s3_music.S3MusicBucket
 }
 
 func (handler MusicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handler.router.ServeHTTP(w, r)
 }
 
-func NewFinalHandler(config *configs.Config, tracksUsecase tracks.Usecase,
-	musicUsecase musicians.Usecase, albumsUsecase album.Usecase,
-	playlistUsecase playlists.Usecase, searchUsecase search.Usecase) *MusicHandler {
+func NewFinalHandler(config *configs.Config,
+	tracksUsecase tracks.Usecase,
+	musicUsecase musicians.Usecase,
+	albumsUsecase album.Usecase,
+	playlistUsecase playlists.Usecase,
+	searchUsecase search.Usecase,
+	s3Client s3_music.S3MusicBucket,
+) *MusicHandler {
 	handler := &MusicHandler{
-		router: mux.NewRouter(),
+		router:   mux.NewRouter(),
+		s3Client: s3Client,
 	}
 
 	metricks := monitoring.RegisterMetrics(handler.router)
@@ -75,4 +83,9 @@ func NewFinalHandler(config *configs.Config, tracksUsecase tracks.Usecase,
 	handler.router.Use(CORSMiddleware.CORS)
 	handler.router.Use(middleware.PanicMiddleware(metricks))
 	return handler
+}
+
+// TODO отдавать файлы
+func (h *MusicHandler) GetFiles(w http.ResponseWriter, r *http.Request) {
+
 }

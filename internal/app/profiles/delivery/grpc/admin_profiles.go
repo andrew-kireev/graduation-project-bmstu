@@ -7,6 +7,7 @@ import (
 	"2021_1_Noskool_team/internal/app/profiles/models"
 	"2021_1_Noskool_team/internal/microservices/auth/delivery/grpc/client"
 	"context"
+	"fmt"
 	"net"
 
 	"github.com/sirupsen/logrus"
@@ -74,6 +75,7 @@ func (a adminProfiles) CreateAdminProfile(ctx context.Context, in *proto.CreateA
 		return out, err
 	}
 
+	fmt.Println(result.Hash)
 	out := &proto.CreateAdminProfileOut{
 		Error:   proto.CreateAdminProfileOut_NO_ERROR,
 		Session: result.Hash,
@@ -83,7 +85,44 @@ func (a adminProfiles) CreateAdminProfile(ctx context.Context, in *proto.CreateA
 }
 
 func (a adminProfiles) LoginAdminProfile(ctx context.Context, in *proto.LoginAdminProfileIn) (*proto.LoginAdminProfileInOut, error) {
-	panic("implement me")
+	adminProfile := &models.AdminProfile{
+		Login:             in.Profile.GetLogin(),
+		EncryptedPassword: in.Profile.GetPassword(),
+	}
+
+	err := a.adminProfiles.LoginAdminProfile(adminProfile)
+	if err != nil {
+		out := &proto.LoginAdminProfileInOut{
+			Error: proto.LoginAdminProfileInOut_ERROR_LOGIN_PROFILE,
+		}
+		return out, err
+	}
+
+	result, err := a.sessionsClient.CreateAdminSession(ctx, in.GetProfile().GetLogin())
+	if err != nil {
+		out := &proto.LoginAdminProfileInOut{
+			Error: proto.LoginAdminProfileInOut_ERROR_LOGIN_PROFILE,
+		}
+		return out, err
+	}
+
+	fmt.Println(result.Hash)
+	out := &proto.LoginAdminProfileInOut{
+		Error:   proto.LoginAdminProfileInOut_ERROR_LOGIN_PROFILE,
+		Session: result.Hash,
+	}
+
+	return out, nil
+
+}
+
+func (a adminProfiles) CheckIsLogged(ctx context.Context, in *proto.CheckIsLoggedIn) (*proto.CheckIsLoggedOut, error) {
+	_, err := a.sessionsClient.Check(ctx, in.GetSession())
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.CheckIsLoggedOut{IsLogged: true}, nil
 }
 
 func (a adminProfiles) LogoutAdminProfile(ctx context.Context, in *proto.LoginAdminProfileIn) (*proto.LoginAdminProfileInOut, error) {

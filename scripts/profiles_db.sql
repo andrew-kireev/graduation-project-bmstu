@@ -20,3 +20,4 @@ CREATE TABLE IF NOT EXISTS admin_profiles
 
 create index profiles_nickname on profiles using btree (nickname);
 create index admin_profiles_login on admin_profiles using btree (login);
+create index admin_profiles_full_index on admin_profiles using btree (login, encrypted_password);

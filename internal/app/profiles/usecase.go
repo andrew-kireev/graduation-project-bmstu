@@ -16,4 +16,5 @@ type Usecase interface {
 
 	// Admin Profiles
 	CreateAdminProfile(*models.AdminProfile) error
+	LoginAdminProfile(profile *models.AdminProfile) error
 }
