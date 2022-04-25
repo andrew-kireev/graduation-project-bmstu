@@ -16,8 +16,6 @@ import (
 	"2021_1_Noskool_team/internal/pkg/server"
 	"2021_1_Noskool_team/internal/pkg/utility"
 	"fmt"
-	"time"
-
 	"github.com/BurntSushi/toml"
 	"github.com/sirupsen/logrus"
 )
@@ -27,7 +25,7 @@ const (
 )
 
 func main() {
-	time.Sleep(50 * time.Second)
+	//time.Sleep(40 * time.Second)
 
 	local := true
 	config := configs.NewConfig(local)
@@ -77,7 +75,8 @@ func main() {
 		albumsUse,
 		playlistUse,
 		searhUse,
-		client)
+		client,
+	)
 
 	fmt.Println("Нормально запустились")
 	err = server.Start(config, handler)

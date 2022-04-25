@@ -5,7 +5,7 @@ import (
 	grpcSerc "2021_1_Noskool_team/internal/microservices/auth/delivery/grpc/server"
 	"2021_1_Noskool_team/internal/microservices/auth/repository"
 	sesUsecase "2021_1_Noskool_team/internal/microservices/auth/usecase"
-
+	"fmt"
 	"github.com/BurntSushi/toml"
 
 	"github.com/gomodule/redigo/redis"
@@ -17,10 +17,11 @@ const (
 )
 
 func main() {
-	//time.Sleep(20 * time.Second)
+	//time.Sleep(10 * time.Second)
 
 	local := true
 	config := configs.NewConfig(local)
+	fmt.Println(config)
 	_, err := toml.DecodeFile(configPath, config)
 	if err != nil {
 		logrus.Error(err)

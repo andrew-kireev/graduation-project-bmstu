@@ -9,6 +9,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
+const (
+	MusicBucket = "music-bucket"
+)
+
 type S3MusicBucket interface {
 	GetObject(context.Context, string, string) ([]byte, error)
 	PutObject(context.Context, []byte, string, string) error

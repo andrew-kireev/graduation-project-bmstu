@@ -271,7 +271,7 @@ func (r *ProfileRepository) CreateAdminProfile(user *models.AdminProfile) error 
 
 func (r *ProfileRepository) LoginAdminProfile(profile *models.AdminProfile) error {
 	var result int
-	err := r.con.QueryRow(`SELECT count(login) FROM admin_profiles
+	err := r.con.QueryRow(`SELECT count('any') FROM admin_profiles
 		WHERE login = $1 and encrypted_password = $2`,
 		&profile.Login, &profile.EncryptedPassword).Scan(&result)
 

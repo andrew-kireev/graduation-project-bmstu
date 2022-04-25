@@ -32,8 +32,8 @@ type MusicHandler struct {
 	s3Client        s3_music.S3MusicBucket
 }
 
-func (handler MusicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	handler.router.ServeHTTP(w, r)
+func (h MusicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.router.ServeHTTP(w, r)
 }
 
 func NewFinalHandler(config *configs.Config,
@@ -62,6 +62,9 @@ func NewFinalHandler(config *configs.Config,
 
 	handler.router.Use(middleware.LoggingMiddleware(metricks))
 
+	//handler.router.HandleFunc("/api/v1/music/data/{trackUrl}",
+	//	handler.GetFiles).Methods(http.MethodGet, http.MethodOptions)
+
 	musicRouter := handler.router.PathPrefix("/api/v1/music/musician/").Subrouter()
 	tracksRouter := handler.router.PathPrefix("/api/v1/music/track/").Subrouter()
 	albumsRouter := handler.router.PathPrefix("/api/v1/music/album/").Subrouter()
@@ -85,7 +88,15 @@ func NewFinalHandler(config *configs.Config,
 	return handler
 }
 
-// TODO отдавать файлы
+// TODO Протестить с фронтом
 func (h *MusicHandler) GetFiles(w http.ResponseWriter, r *http.Request) {
+	trackUrl := mux.Vars(r)["trackUrl"]
 
+	trackFile, err := h.s3Client.GetObject(r.Context(), s3_music.MusicBucket, trackUrl)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Write(trackFile)
 }

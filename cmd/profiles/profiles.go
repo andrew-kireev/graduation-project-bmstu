@@ -8,12 +8,10 @@ import (
 	"2021_1_Noskool_team/internal/app/profiles/usecase"
 	"2021_1_Noskool_team/internal/pkg/utility"
 	"flag"
-	"log"
-
 	"github.com/BurntSushi/toml"
-
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/sirupsen/logrus"
+	"log"
 )
 
 var (
@@ -25,7 +23,7 @@ func init() {
 }
 
 func main() {
-	//time.Sleep(50 * time.Second)
+	//time.Sleep(40 * time.Second)
 	flag.Parse()
 
 	local := true
