@@ -7,7 +7,6 @@ import (
 	sesUsecase "2021_1_Noskool_team/internal/microservices/auth/usecase"
 	"fmt"
 	"github.com/BurntSushi/toml"
-
 	"github.com/gomodule/redigo/redis"
 	"github.com/sirupsen/logrus"
 )

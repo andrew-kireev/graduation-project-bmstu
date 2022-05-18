@@ -317,15 +317,6 @@ values (1, 1),
 -- VALUES (1, 0, 'Alternative', 'Alternative music', '/api/v1/music/data/img/playlists/alternative.webp', '2021-06-01'),
 --        (2, 0, 'For Good Mood', 'favorite music', '/api/v1/music/data/img/playlists/happy.webp', '2021-07-01');
 
-insert into tracks_to_playlist(track_id, playlist_id)
-VALUES (1, 1),
-       (11, 1),
-       (15, 1),
-       (18, 1),
-       (22, 2),
-       (7, 2),
-       (20, 2);
-
 CREATE TABLE IF NOT EXISTS tracks_to_user
 (
     user_id  INTEGER NOT NULL,
