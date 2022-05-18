@@ -2,8 +2,9 @@ package server
 
 import (
 	"2021_1_Noskool_team/configs"
-	"github.com/gorilla/mux"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
 func TestFailedResponse(t *testing.T) {

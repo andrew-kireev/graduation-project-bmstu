@@ -1,4 +1,5 @@
 syntax = "proto3";
+option go_package = ".";
 
 // protoc --go_out=plugins=grpc:. *.proto
 
@@ -22,5 +23,8 @@ service AuthChecker {
   rpc Create (UserID) returns (Result) {}
   rpc Check (Hash) returns (Result) {}
   rpc Delete (Hash) returns (Result) {}
+
+  // Создания сессий для админки
+  rpc CreateAdminSession(UserID) returns (Result) {}
 }
 

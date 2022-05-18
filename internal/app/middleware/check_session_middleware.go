@@ -4,9 +4,8 @@ import (
 	"2021_1_Noskool_team/internal/microservices/auth/delivery/grpc/client"
 	"context"
 	"fmt"
-	"net/http"
-
 	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 type SessionsMiddleware struct {
@@ -22,6 +21,9 @@ func NewSessionMiddleware(grpcClient client.AuthCheckerClient) *SessionsMiddlewa
 
 func (sessMiddleware *SessionsMiddleware) CheckSessionMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println()
+		fmt.Println(r.Cookies())
+		fmt.Println()
 		sessionID, err := r.Cookie("session_id")
 		if err != nil {
 			fmt.Printf("Error in parsing cookie: %v\n", err)
@@ -30,11 +32,13 @@ func (sessMiddleware *SessionsMiddleware) CheckSessionMiddleware(next http.Handl
 		}
 
 		userID := sessionID.Value
+		fmt.Printf("UserID =: %v\n", userID)
 		session, err := sessMiddleware.sessionsClient.Check(context.Background(), userID)
 		fmt.Println("Result: = " + session.Status)
 
 		if err == nil {
-			//w.Write([]byte("Кука есть и id у нее = " + strconv.Itoa(session.ID) + "\n"))
+			fmt.Println("UserID: = " + session.ID)
+			//w.Write([]byte("Кука есть и id у нее = " + session.ID + "\n"))
 		} else {
 			fmt.Printf("Error in checking session: %v\n", err)
 			w.WriteHeader(http.StatusUnauthorized)
@@ -61,8 +65,9 @@ func (sessMiddleware *SessionsMiddleware) CheckIsNotAuthorized(next http.Handler
 			next.ServeHTTP(w, r)
 			return
 		}
-
 		logrus.Error("Error, User is Authorized")
+
+		http.SetCookie(w, sessionID)
 		w.WriteHeader(418)
 	})
 }

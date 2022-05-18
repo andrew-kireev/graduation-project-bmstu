@@ -13,6 +13,7 @@ import (
 	searchHttp "2021_1_Noskool_team/internal/app/search/delivery/http"
 	"2021_1_Noskool_team/internal/app/tracks"
 	trackHttp "2021_1_Noskool_team/internal/app/tracks/delivery/http"
+	"2021_1_Noskool_team/internal/clients/s3_music"
 	"2021_1_Noskool_team/internal/pkg/monitoring"
 	"net/http"
 
@@ -28,17 +29,24 @@ type MusicHandler struct {
 	albumsHandler   *albumHttp.AlbumsHandler
 	playlistHandler *playlistHttp.PlaylistsHandler
 	searchHandler   *searchHttp.SearchHandler
+	s3Client        s3_music.S3MusicBucket
 }
 
-func (handler MusicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	handler.router.ServeHTTP(w, r)
+func (h MusicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.router.ServeHTTP(w, r)
 }
 
-func NewFinalHandler(config *configs.Config, tracksUsecase tracks.Usecase,
-	musicUsecase musicians.Usecase, albumsUsecase album.Usecase,
-	playlistUsecase playlists.Usecase, searchUsecase search.Usecase) *MusicHandler {
+func NewFinalHandler(config *configs.Config,
+	tracksUsecase tracks.Usecase,
+	musicUsecase musicians.Usecase,
+	albumsUsecase album.Usecase,
+	playlistUsecase playlists.Usecase,
+	searchUsecase search.Usecase,
+	s3Client s3_music.S3MusicBucket,
+) *MusicHandler {
 	handler := &MusicHandler{
-		router: mux.NewRouter(),
+		router:   mux.NewRouter(),
+		s3Client: s3Client,
 	}
 
 	metricks := monitoring.RegisterMetrics(handler.router)
@@ -53,6 +61,9 @@ func NewFinalHandler(config *configs.Config, tracksUsecase tracks.Usecase,
 	sanitizer := bluemonday.UGCPolicy()
 
 	handler.router.Use(middleware.LoggingMiddleware(metricks))
+
+	//handler.router.HandleFunc("/api/v1/music/data/{trackUrl}",
+	//	handler.GetFiles).Methods(http.MethodGet, http.MethodOptions)
 
 	musicRouter := handler.router.PathPrefix("/api/v1/music/musician/").Subrouter()
 	tracksRouter := handler.router.PathPrefix("/api/v1/music/track/").Subrouter()
@@ -75,4 +86,17 @@ func NewFinalHandler(config *configs.Config, tracksUsecase tracks.Usecase,
 	handler.router.Use(CORSMiddleware.CORS)
 	handler.router.Use(middleware.PanicMiddleware(metricks))
 	return handler
+}
+
+// TODO Протестить с фронтом
+func (h *MusicHandler) GetFiles(w http.ResponseWriter, r *http.Request) {
+	trackUrl := mux.Vars(r)["trackUrl"]
+
+	trackFile, err := h.s3Client.GetObject(r.Context(), s3_music.MusicBucket, trackUrl)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Write(trackFile)
 }

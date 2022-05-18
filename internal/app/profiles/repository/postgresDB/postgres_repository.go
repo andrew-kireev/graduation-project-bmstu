@@ -256,3 +256,32 @@ func (r *ProfileRepository) SearchTracks(searchQuery string) ([]*models.OtherUse
 	}
 	return subscriptions, err
 }
+
+func (r *ProfileRepository) CreateAdminProfile(user *models.AdminProfile) error {
+	if err := user.ValidateForCreate(); err != nil {
+		return err
+	}
+	_, err := r.con.Exec(
+		"INSERT INTO admin_profiles(login, encrypted_password) VALUES ($1, $2)",
+		user.Login,
+		user.EncryptedPassword)
+
+	return err
+}
+
+func (r *ProfileRepository) LoginAdminProfile(profile *models.AdminProfile) error {
+	var result int
+	err := r.con.QueryRow(`SELECT count('any') FROM admin_profiles
+		WHERE login = $1 and encrypted_password = $2`,
+		&profile.Login, &profile.EncryptedPassword).Scan(&result)
+
+	if err != nil {
+		return err
+	}
+
+	if result != 1 {
+		return fmt.Errorf("profile not found")
+	}
+
+	return nil
+}

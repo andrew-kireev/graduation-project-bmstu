@@ -4,9 +4,10 @@ import (
 	mock_playlists "2021_1_Noskool_team/internal/app/playlists/mocks"
 	"2021_1_Noskool_team/internal/app/playlists/models"
 	trackModels "2021_1_Noskool_team/internal/app/tracks/models"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var (

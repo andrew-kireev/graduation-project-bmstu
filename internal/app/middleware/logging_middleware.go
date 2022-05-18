@@ -3,12 +3,13 @@ package middleware
 import (
 	"2021_1_Noskool_team/internal/pkg/monitoring"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"regexp"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
 var (

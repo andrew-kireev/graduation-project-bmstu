@@ -4,9 +4,10 @@ import (
 	mock_auth "2021_1_Noskool_team/internal/microservices/auth/mocks"
 	"2021_1_Noskool_team/internal/microservices/auth/models"
 	"errors"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCheckSession(t *testing.T) {

@@ -1,3 +1,7 @@
+GOPATH?=$(shell go env GOPATH)
+GOPACKAGES=$(shell go list ./... | grep -v generated)
+GOFLAGS   = -mod=vendor
+
 
 DOCKER_DIR := ${CURDIR}/build/package
 
@@ -31,10 +35,13 @@ clear-dockers:
 linter:
 	 golangci-lint run
 
+imports:
+	goimports -local graduation-project-bmstu -w ./internal ./cmd
+
+
 .PHONY: build_profile
 build_profile:
 	go build -v ./cmd/profiles
-
 
 
 .PHONY: clean

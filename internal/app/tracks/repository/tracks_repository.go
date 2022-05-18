@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"github.com/sirupsen/logrus"
 )
 

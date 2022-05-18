@@ -45,6 +45,7 @@ func New(config *configs.Config, profUsecase profiles.Usecase, sanitizer *bluemo
 	if err != nil {
 		logrus.Error(err)
 	}
+
 	return &ProfilesServer{
 		config:         config,
 		logger:         logrus.New(),
@@ -97,7 +98,7 @@ func (s *ProfilesServer) configureRouter() {
 	s.router.HandleFunc("/api/v1/user/profile/csrf",
 		authMiddleware.CheckSessionMiddleware(s.CreateCSRFHandler)).Methods(http.MethodGet, http.MethodOptions)
 	s.router.HandleFunc("/api/v1/user/profile",
-		authMiddleware.CheckSessionMiddleware(middleware.CheckCSRFMiddleware(s.handleProfile()))).Methods(http.MethodGet, http.MethodOptions)
+		authMiddleware.CheckSessionMiddleware(s.handleProfile())).Methods(http.MethodGet, http.MethodOptions)
 	s.router.HandleFunc("/api/v1/user/profile/update",
 		authMiddleware.CheckSessionMiddleware(s.handleUpdateProfile())).Methods(http.MethodPost, http.MethodOptions)
 	s.router.HandleFunc("/api/v1/user/profile/avatar/upload",
@@ -324,7 +325,6 @@ func (s *ProfilesServer) handleLogin() http.HandlerFunc {
 			Value:    session.Hash,
 			Path:     "/",
 			Expires:  time.Now().Add(10000 * time.Hour),
-			Secure:   false,
 			HttpOnly: true,
 		}
 		http.SetCookie(w, &cookie)
@@ -404,6 +404,8 @@ func (s *ProfilesServer) handleLogout() http.HandlerFunc {
 
 func (s *ProfilesServer) handleProfile() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("test")
+		s.logger.Info(r)
 		s.logger.Info("starting handleProfile")
 		w.Header().Set("Content-Type", "application/json")
 		SessionHash, err := r.Cookie("session_id")
