@@ -29,6 +29,7 @@ func NewConfig(local bool) *Config {
 		}
 	}
 
+
 	return &Config{
 		MusicServerAddr:         ":8888",
 		SessionMicroserviceAddr: "sessions-service:8081",
