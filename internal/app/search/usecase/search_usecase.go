@@ -29,8 +29,6 @@ func NewSearchUsecase(trackRep tracks.Repository, albumRep album.Repository,
 	}
 }
 
-
-
 func (usecase *SearchUsecase) SearchContent(searchQuery string) *models.Search {
 	search := &models.Search{}
 	tracks, _ := usecase.tracksRep.SearchTracks(searchQuery)
@@ -64,7 +62,7 @@ func (usecase *SearchUsecase) SearchContent(searchQuery string) *models.Search {
 	return search
 }
 
-func (usecase *SearchUsecase) ConvertTracks(tracks []*trackModels.Track) []*models.TrackWithAlbum{
+func (usecase *SearchUsecase) ConvertTracks(tracks []*trackModels.Track) []*models.TrackWithAlbum {
 	newTracks := make([]*models.TrackWithAlbum, len(tracks))
 
 	for idx, track := range tracks {

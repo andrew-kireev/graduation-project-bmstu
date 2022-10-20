@@ -5,6 +5,7 @@ import (
 	"2021_1_Noskool_team/internal/microservices/auth/models"
 	"context"
 	"fmt"
+
 	"google.golang.org/grpc"
 )
 
@@ -43,6 +44,15 @@ func (sesClient *SessionsClient) Delete(ctx context.Context, hash string) (model
 	result, err := sesClient.client.Delete(ctx, Hash, grpc.EmptyCallOption{})
 	if err != nil {
 		fmt.Println(err)
+		return models.Result{}, err
+	}
+	return transformIntoResultModel(result), nil
+}
+
+func (sesClient *SessionsClient) CreateAdminSession(ctx context.Context, adminLogin string) (models.Result, error) {
+	UserID := &proto.UserID{ID: adminLogin}
+	result, err := sesClient.client.CreateAdminSession(ctx, UserID, grpc.EmptyCallOption{})
+	if err != nil {
 		return models.Result{}, err
 	}
 	return transformIntoResultModel(result), nil

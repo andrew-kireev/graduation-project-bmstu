@@ -7,10 +7,11 @@ import (
 	"2021_1_Noskool_team/internal/app/search/models"
 	"2021_1_Noskool_team/internal/pkg/response"
 	"fmt"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 type SearchHandler struct {

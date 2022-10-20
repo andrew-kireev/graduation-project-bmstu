@@ -12,11 +12,10 @@ import (
 	searchUsecase "2021_1_Noskool_team/internal/app/search/usecase"
 	trackRepository "2021_1_Noskool_team/internal/app/tracks/repository"
 	trackUsecase "2021_1_Noskool_team/internal/app/tracks/usecase"
+	"2021_1_Noskool_team/internal/clients/s3_music"
 	"2021_1_Noskool_team/internal/pkg/server"
 	"2021_1_Noskool_team/internal/pkg/utility"
 	"fmt"
-	"time"
-
 	"github.com/BurntSushi/toml"
 	"github.com/sirupsen/logrus"
 )
@@ -26,8 +25,10 @@ const (
 )
 
 func main() {
-	time.Sleep(50 * time.Second)
-	config := configs.NewConfig()
+	//time.Sleep(40 * time.Second)
+
+	local := true
+	config := configs.NewConfig(local)
 	_, err := toml.DecodeFile(configPath, config)
 	if err != nil {
 		logrus.Error(err)
@@ -62,9 +63,21 @@ func main() {
 	playlistRep := playlistRepository.NewPlaylistRepository(playlistDBCon)
 	playlistUse := playlistUsecase.NewPlaylistUsecase(playlistRep)
 
+	client, err := s3_music.New()
+	if err != nil {
+		logrus.Error(err)
+	}
+
 	searhUse := searchUsecase.NewSearchUsecase(trackRep, albumRep, musicianskRep, playlistRep)
-	handler := musicHttp.NewFinalHandler(config, trackUse, musUsecase,
-		albumsUse, playlistUse, searhUse)
+	handler := musicHttp.NewFinalHandler(config,
+		trackUse,
+		musUsecase,
+		albumsUse,
+		playlistUse,
+		searhUse,
+		client,
+	)
+
 	fmt.Println("Нормально запустились")
 	err = server.Start(config, handler)
 	if err != nil {

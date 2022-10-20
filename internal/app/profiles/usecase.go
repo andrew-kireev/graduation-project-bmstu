@@ -13,4 +13,8 @@ type Usecase interface {
 	UnsubscribeMeToSomebody(myID, otherUserID int) error
 	GetOtherUserPage(myID, otherUserID int) (*models.OtherUserFullInformation, error)
 	SearchTracks(searchQuery string) ([]*models.OtherUser, error)
+
+	// Admin Profiles
+	CreateAdminProfile(*models.AdminProfile) error
+	LoginAdminProfile(profile *models.AdminProfile) error
 }

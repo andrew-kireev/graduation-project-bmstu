@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"2021_1_Noskool_team/internal/pkg/response"
-	"github.com/sirupsen/logrus"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 func CheckCSRFMiddleware(next http.HandlerFunc) http.HandlerFunc {

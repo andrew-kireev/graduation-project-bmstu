@@ -6,9 +6,10 @@ import (
 	commonModels "2021_1_Noskool_team/internal/models"
 	"errors"
 	"fmt"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var (

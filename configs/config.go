@@ -14,7 +14,22 @@ type Config struct {
 }
 
 // NewConfig ...
-func NewConfig() *Config {
+func NewConfig(local bool) *Config {
+	if local {
+		return &Config{
+			MusicServerAddr:         ":8888",
+			SessionMicroserviceAddr: ":8081",
+			SessionRedisStore:       "redis://127.0.0.1:6379",
+			MusicPostgresBD:         "host=localhost port=5432 user=postgres dbname=music_service_docker password=password sslmode=disable",
+			ProfilesServerAddr:      ":8082",
+			ProfileDB:               "host=localhost port=5432 user=postgres dbname=music_service_docker password=password sslmode=disable",
+			LogLevel:                "debug",
+			FrontendURL:             "http://localhost:9001",
+			MediaFolder:             "./static",
+		}
+	}
+
+
 	return &Config{
 		MusicServerAddr:         ":8888",
 		SessionMicroserviceAddr: "sessions-service:8081",
@@ -23,7 +38,7 @@ func NewConfig() *Config {
 		ProfilesServerAddr:      ":8082",
 		ProfileDB:               "host=music-bd port=5432 user=andrewkireev dbname=music_service_docker password=password sslmode=disable",
 		LogLevel:                "debug",
-		FrontendURL:             "84.201.189.81:9000",
+		FrontendURL:             "http://localhost:9001",
 		MediaFolder:             "./static",
 	}
 }

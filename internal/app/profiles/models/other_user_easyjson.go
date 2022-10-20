@@ -5,6 +5,7 @@ package models
 import (
 	models "2021_1_Noskool_team/internal/app/playlists/models"
 	json "encoding/json"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"

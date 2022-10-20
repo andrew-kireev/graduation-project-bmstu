@@ -4,14 +4,15 @@ import (
 	"2021_1_Noskool_team/internal/microservices/auth"
 	proto "2021_1_Noskool_team/internal/microservices/auth/delivery/grpc/protobuff"
 	"context"
-	"fmt"
+	"net"
+
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
 )
 
 type server struct {
+	proto.UnimplementedAuthCheckerServer
 	sessionsUsecase auth.Usecase
 }
 
@@ -43,7 +44,6 @@ func StartSessionsGRPCServer(sesUsecase auth.Usecase, url string) {
 func (s *server) Create(ctx context.Context, id *proto.UserID) (*proto.Result, error) {
 	session, err := s.sessionsUsecase.CreateSession(id.ID)
 	if err != nil {
-		fmt.Println(err)
 		result := &proto.Result{
 			ID:     id,
 			Status: err.Error(),
@@ -65,7 +65,6 @@ func (s *server) Create(ctx context.Context, id *proto.UserID) (*proto.Result, e
 func (s *server) Check(ctx context.Context, hash *proto.Hash) (*proto.Result, error) {
 	session, err := s.sessionsUsecase.CheckSession(hash.Hash)
 	if err != nil {
-		fmt.Println(err)
 		userID := &proto.UserID{
 			ID: "-1",
 		}
@@ -93,7 +92,6 @@ func (s *server) Delete(ctx context.Context, hash *proto.Hash) (*proto.Result, e
 		ID: "-1",
 	}
 	if err != nil {
-		fmt.Println(err)
 
 		result := &proto.Result{
 			ID:     userID,
@@ -105,5 +103,25 @@ func (s *server) Delete(ctx context.Context, hash *proto.Hash) (*proto.Result, e
 		ID:     userID,
 		Status: "OK",
 	}
+	return result, nil
+}
+
+func (s *server) CreateAdminSession(ctx context.Context, userID *proto.UserID) (*proto.Result, error) {
+	session, err := s.sessionsUsecase.CreateAdminSession(ctx, userID.GetID())
+	if err != nil {
+		result := &proto.Result{
+			Status: err.Error(),
+		}
+		return result, err
+	}
+
+	result := &proto.Result{
+		ID: &proto.UserID{
+			ID: session.UserID,
+		},
+		Hash:   session.Hash,
+		Status: "OK",
+	}
+
 	return result, nil
 }

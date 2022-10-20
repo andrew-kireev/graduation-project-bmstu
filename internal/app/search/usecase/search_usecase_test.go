@@ -11,9 +11,10 @@ import (
 	mockTracks "2021_1_Noskool_team/internal/app/tracks/mocks"
 	models2 "2021_1_Noskool_team/internal/app/tracks/models"
 	"errors"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var (
